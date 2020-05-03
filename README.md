@@ -1,4 +1,4 @@
-# Sorting-alg-visualization-Python
+# sorting-visualization
  > A simple tool to visualize different sorting algorithms using python and pygame.
 
 
