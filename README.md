@@ -1,10 +1,10 @@
-# Sorting-alg-visualization-Python
+# sorting-visualization
  > A simple tool to visualize different sorting algorithms using python and pygame.
 
 
 ## Prerequisites
 For this tool to work, you'll need python 3 installed, as well as pygame. <br>
-If you already have python 3 installed, simply execute the following command:
+If you already have python 3 installed, simply execute the following command to install pygame:
 
 ```
 pip install pygame
