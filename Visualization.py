@@ -3,6 +3,7 @@ import time
 import pygame as p
 import argparse
 import sys
+import logging
 
 parser = argparse.ArgumentParser(description="Visualize different sorting-algoritms")
 
@@ -18,7 +19,8 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "-novisualization",
+    "-novis",
+    dest="novis",
     help="Let you choose not to visualize the sorting",
     default=False,
 )
@@ -32,6 +34,12 @@ if not args.Algorithm:
     print("Please include what algorithm you want to visualize")
     parser.print_help()
     sys.exit(1)
+
+if not args.novis:
+    try:
+        import pygame
+    except ImportError:
+        logging.error("Pygame Library Not Available!")
 
 
 def swap(nums, a, b):
@@ -80,6 +88,11 @@ def animate(nums):
         i += 1
 
 
+def main():
+    amount = args.amount
+    algorithm = args.algorithm
+
+
 # Main part/where the code actually is run
 
 nums = random.sample(range(1, args.Amount + 1), args.Amount)
@@ -91,3 +104,7 @@ screenHight = 480
 postWidth = int((screenWidth - (screenWidth / 0.2)) / len(nums))
 screen = p.display.set_mode((screenWidth, screenHight))
 postColor = (0, 0, 128)
+
+
+if __name__ == "__main__":
+    main()
