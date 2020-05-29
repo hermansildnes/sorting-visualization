@@ -1,9 +1,11 @@
 import random
 import time
-import pygame as p
+import pygame
 import argparse
 import sys
+import os
 import logging
+
 
 parser = argparse.ArgumentParser(description="Visualize different sorting-algoritms")
 
@@ -26,6 +28,7 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
+
 if len(sys.argv) <= 1:
     parser.print_help()
     sys.exit(1)
@@ -38,6 +41,8 @@ if not args.Algorithm:
 if not args.novis:
     try:
         import pygame
+
+        pygame.init()
     except ImportError:
         logging.error("Pygame Library Not Available!")
 
@@ -49,10 +54,12 @@ def swap(nums, a, b):
 
 # Bubblesort algorithm
 def bubblesort(nums):
+    global novis
     for i in range(len(nums) - 1, 0, -1):
         for j in range(i):
             if nums[j] > nums[j + 1]:
                 swap(nums, j, j + 1)
+                time.sleep(0.15)
                 animate(nums)
     return nums
 
@@ -65,45 +72,104 @@ def selectionsort(nums):
             if nums[j] < nums[minpos]:
                 minpos = j
         swap(nums, minpos, i)
-        animate(nums)
     return nums
+
+
+def write_to_file(nums, sort):
+    file1 = open(r"C:\Users\Herman\Development\write_file1.txt", "w")
+
+    file1.write(sort + str(nums))
+
+    file1 = open(r"C:\Users\Herman\Development\write_file1.txt", "r")
+    file = open(r"C:\Users\Herman\Development\write_file.txt", "a")
+
+    for line in file1:
+        file.write(line.replace(" ", "\n"))
+
+    file.close()
+    file1.close()
+    os.remove(r"C:\Users\Herman\Development\write_file1.txt")
 
 
 # Function that can be called to visualize the sorting algorithm
 def animate(nums):
     # Do something here:
-    i = 0
+    global screen, postColor, postWidth, screenWidth, screenHeight
+
+    u = 0
     for num in nums:
-        p.draw.rect(
+        print("x: " + str(2 + (postWidth * u) + (1 * u)))
+        print("y: " + str(screenHeight - (num * 10) - 2))
+        print("width: " + str(postWidth))
+        print("heigth: " + str(num * 5) + "\n")
+
+        pygame.draw.rect(
             screen,
             postColor,
             (
-                (int((postWidth + (screenWidth / (0.2 / len(nums)))) * i)),
-                470,
+                # X
+                (2 + (postWidth * u) + (1 * u)),
+                # Y
+                (screenHeight - (num * 10) - 2),
+                # Bredde
                 postWidth,
-                nums[i],
+                # Høyde
+                num * 10,
             ),
-        )  # (x, y , bredde, høyde)
-        p.display.update()
-        i += 1
+        )
+        pygame.display.update()
+        u += 1
+
+
+amount = args.Amount
+algorithm = args.Algorithm
+novis = args.novis
+
+
+# Genererer en liste med alle tallene fra 1 til og med amount
+nums = random.sample(range(1, amount + 1), amount)
+
+
+screenWidth = 640
+screenHeight = 480
+postWidth = int((screenWidth / len(nums) / 2))
+postColor = (0, 0, 128)
+white = (255, 255, 255)
+screen = pygame.display.set_mode((screenWidth, screenHeight))
+clock = pygame.time.Clock()
+pygame.display.set_caption("Visualization tool")
+screen.fill(white)
 
 
 def main():
-    amount = args.amount
-    algorithm = args.algorithm
 
+    global algorithm
+    global nums
 
-# Main part/where the code actually is run
+    # Tømmer output filen
+    file = open(r"C:\Users\Herman\Development\write_file.txt", "w")
+    file.write("")
 
-nums = random.sample(range(1, args.Amount + 1), args.Amount)
+    # Skriver den usorterte listen til output filen
+    write_to_file(nums, "Unsorted:\n")
 
-p.init()
+    if algorithm == "Bubble":
+        bubblesort(nums)
 
-screenWidth = 640
-screenHight = 480
-postWidth = int((screenWidth - (screenWidth / 0.2)) / len(nums))
-screen = p.display.set_mode((screenWidth, screenHight))
-postColor = (0, 0, 128)
+    if algorithm == "Selection":
+        selectionsort(nums)
+
+    # Skriver den sorterte listen til output filen
+    write_to_file(nums, "\n Sorted:\n")
+
+    running = True
+    while running == True:
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+    pygame.quit()
 
 
 if __name__ == "__main__":
