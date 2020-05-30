@@ -24,7 +24,7 @@ After cloning the repository, execute the following commands to run the visualiz
 cd Sorting-alg-Visualization
 ```
 ```
-python Visualization.py
+python Visualization.py [Sorting alg]
 ```
 
 ## License
