@@ -14,17 +14,21 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "-Amount",
+    "-amount",
+    "--amount",
     dest="Amount",
     help="How many numbers you want the program to sort, default is 50",
     type=int,
-    default=50,
+    default=100,
 )
 
 parser.add_argument(
     "-novis",
+    "--novis",
     dest="novis",
+    nargs="?",
     help="Let you choose not to visualize the sorting",
+    const=True,
     default=False,
     required=False,
 )
@@ -45,6 +49,7 @@ if not args.novis:
         import pygame
 
         pygame.init()
+
     except ImportError:
         logging.error("Pygame Library Not Available!")
 
@@ -64,7 +69,9 @@ def bubblesort(nums):
                 swap(nums, j, j + 1)
 
                 if not novis:
-                    time.sleep(0.05)
+                    if len(nums) < 200:
+
+                        time.sleep(0.005)
                     animate(nums)
 
     return nums
@@ -82,8 +89,10 @@ def selectionsort(nums):
         swap(nums, minpos, i)
 
         if not novis:
+            if len(nums) < 200:
+
+                time.sleep(0.005)
             animate(nums)
-            time.sleep(0.05)
 
     return nums
 
@@ -109,10 +118,10 @@ def write_to_file(nums, sort):
 # Function that can be called to visualize the sorting algorithm
 def animate(nums):
     # Do something here:
-    global screen, postColor, postWidth, screenWidth, screenHeight, white
+    global screen, postColor, postWidth, screenWidth, screenHeight, backgroundColor, postHeight_multiplier
     # debugging = open(r"C:\Users\Herman\Development\debugging.txt", "a")
 
-    pos = 2
+    pos = 1
     for num in nums:
 
         # For debugging purposes only
@@ -126,7 +135,7 @@ def animate(nums):
 
         pygame.draw.rect(
             screen,
-            white,
+            backgroundColor,
             (
                 # X
                 (pos),
@@ -146,15 +155,15 @@ def animate(nums):
                 # X
                 (pos),
                 # Y
-                (screenHeight - (num * 10) - 2),
+                (screenHeight - (num * postHeight_multiplier) - 1),
                 # Bredde
                 postWidth,
                 # Høyde
-                num * 10,
+                num * postHeight_multiplier,
             ),
         )
         pygame.display.update()
-        pos = pos + postWidth + 2
+        pos = pos + postWidth + 1
 
     # debugging.close()
 
@@ -186,7 +195,8 @@ def main():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_q:
+                    raise SystemExit
     pygame.quit()
 
 
@@ -202,12 +212,24 @@ if not novis:
     screenWidth = 640
     screenHeight = 480
     postWidth = int(screenWidth / len(nums))
-    postColor = (0, 0, 128)
-    white = (255, 255, 255)
-    screen = pygame.display.set_mode((screenWidth, screenHeight))
+
+    postHeight_multiplier = 0
+    postHeight = 0
+
+    while postHeight < screenHeight:
+        postHeight_multiplier += 0.1
+        postHeight = max(nums) * postHeight_multiplier
+
+    postHeight_multiplier = int(postHeight_multiplier)
+
+    postColor = (13, 59, 102)
+    backgroundColor = (250, 240, 202)
+    screen = pygame.display.set_mode(
+        ((screenWidth + (1 * len(nums)) - 37), screenHeight)
+    )
     clock = pygame.time.Clock()
     pygame.display.set_caption("Visualization tool")
-    screen.fill(white)
+    screen.fill(backgroundColor)
 
 # debugging = open(r"C:\Users\Herman\Development\debugging.txt", "w")
 # debugging.write("")
