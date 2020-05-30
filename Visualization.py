@@ -14,10 +14,11 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "Amount",
-    help="How many numbers you want the program to sort, default is 30",
-    default=30,
+    "-Amount",
+    dest="Amount",
+    help="How many numbers you want the program to sort, default is 50",
     type=int,
+    default=50,
 )
 
 parser.add_argument(
@@ -25,6 +26,7 @@ parser.add_argument(
     dest="novis",
     help="Let you choose not to visualize the sorting",
     default=False,
+    required=False,
 )
 
 args = parser.parse_args()
@@ -55,23 +57,34 @@ def swap(nums, a, b):
 # Bubblesort algorithm
 def bubblesort(nums):
     global novis
+
     for i in range(len(nums) - 1, 0, -1):
         for j in range(i):
             if nums[j] > nums[j + 1]:
                 swap(nums, j, j + 1)
-                time.sleep(0.15)
-                animate(nums)
+
+                if not novis:
+                    time.sleep(0.01)
+                    animate(nums)
+
     return nums
 
 
 # Selectionsort algorithm
 def selectionsort(nums):
+    global novis
+
     for i in range(len(nums)):
         minpos = i
         for j in range(i, len(nums)):
             if nums[j] < nums[minpos]:
                 minpos = j
         swap(nums, minpos, i)
+
+        if not novis:
+            animate(nums)
+            time.sleep(0.01)
+
     return nums
 
 
@@ -79,6 +92,8 @@ def write_to_file(nums, sort):
     file1 = open(r"C:\Users\Herman\Development\write_file1.txt", "w")
 
     file1.write(sort + str(nums))
+
+    file1.close()
 
     file1 = open(r"C:\Users\Herman\Development\write_file1.txt", "r")
     file = open(r"C:\Users\Herman\Development\write_file.txt", "a")
@@ -94,21 +109,28 @@ def write_to_file(nums, sort):
 # Function that can be called to visualize the sorting algorithm
 def animate(nums):
     # Do something here:
-    global screen, postColor, postWidth, screenWidth, screenHeight
+    global screen, postColor, postWidth, screenWidth, screenHeight, white
+    # debugging = open(r"C:\Users\Herman\Development\debugging.txt", "a")
 
-    u = 0
+    pos = 2
+    screen.fill(white)
     for num in nums:
-        print("x: " + str(2 + (postWidth * u) + (1 * u)))
-        print("y: " + str(screenHeight - (num * 10) - 2))
-        print("width: " + str(postWidth))
-        print("heigth: " + str(num * 5) + "\n")
+
+        # For debugging purposes only
+        # debugging.write("\nITERATION: " + str(iteration) + "\n\n")
+        # debugging.write("Index: " + str(nums.index(num)) + "\n")
+        # debugging.write("postWidth: " + str(postWidth) + "\n")
+        # debugging.write("pos: " + str(pos) + "\n")
+        # debugging.write("width: " + str(postWidth) + "\n")
+        # debugging.write("heigth: " + str(num * 10) + "\n")
+        # debugging.write("nums: " + str(nums) + "\n\n")
 
         pygame.draw.rect(
             screen,
             postColor,
             (
                 # X
-                (2 + (postWidth * u) + (1 * u)),
+                (pos),
                 # Y
                 (screenHeight - (num * 10) - 2),
                 # Bredde
@@ -118,27 +140,9 @@ def animate(nums):
             ),
         )
         pygame.display.update()
-        u += 1
+        pos = pos + postWidth + 2
 
-
-amount = args.Amount
-algorithm = args.Algorithm
-novis = args.novis
-
-
-# Genererer en liste med alle tallene fra 1 til og med amount
-nums = random.sample(range(1, amount + 1), amount)
-
-
-screenWidth = 640
-screenHeight = 480
-postWidth = int((screenWidth / len(nums) / 2))
-postColor = (0, 0, 128)
-white = (255, 255, 255)
-screen = pygame.display.set_mode((screenWidth, screenHeight))
-clock = pygame.time.Clock()
-pygame.display.set_caption("Visualization tool")
-screen.fill(white)
+    # debugging.close()
 
 
 def main():
@@ -161,16 +165,39 @@ def main():
 
     # Skriver den sorterte listen til output filen
     write_to_file(nums, "\n Sorted:\n")
-
-    running = True
-    while running == True:
-        pygame.display.update()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+    if not novis:
+        running = True
+        while running == True:
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
 
     pygame.quit()
 
+
+amount = args.Amount
+algorithm = args.Algorithm
+novis = args.novis
+
+
+# Genererer en liste med alle tallene fra 1 til og med amount
+nums = random.sample(range(1, amount + 1), amount)
+
+if not novis:
+    screenWidth = 640
+    screenHeight = 480
+    postWidth = int(screenWidth / len(nums))
+    postColor = (0, 0, 128)
+    white = (255, 255, 255)
+    screen = pygame.display.set_mode((screenWidth, screenHeight))
+    clock = pygame.time.Clock()
+    pygame.display.set_caption("Visualization tool")
+    screen.fill(white)
+
+# debugging = open(r"C:\Users\Herman\Development\debugging.txt", "w")
+# debugging.write("")
+# debugging.close()
 
 if __name__ == "__main__":
     main()
