@@ -5,6 +5,8 @@ import argparse
 import sys
 import os
 import logging
+from timeit import repeat
+import json
 
 
 parser = argparse.ArgumentParser(description="Visualize different sorting-algoritms")
@@ -19,7 +21,7 @@ parser.add_argument(
     dest="Amount",
     help="How many numbers you want the program to sort, default is 50",
     type=int,
-    default=100,
+    default=50,
 )
 
 parser.add_argument(
@@ -60,7 +62,7 @@ def swap(nums, a, b):
 
 
 # Bubblesort algorithm
-def bubblesort(nums):
+def bubbleSort(nums):
     global novis
 
     for i in range(len(nums) - 1, 0, -1):
@@ -78,7 +80,7 @@ def bubblesort(nums):
 
 
 # Selectionsort algorithm
-def selectionsort(nums):
+def selectionSort(nums):
     global novis
 
     for i in range(len(nums)):
@@ -239,6 +241,54 @@ def insertionSort(nums):
             animate(nums)
 
 
+def shellSort(nums):
+    global novis
+
+    if not novis:
+        animate(nums)
+    gap = len(nums) // 2
+    while gap > 0:
+
+        for i in range(gap, len(nums)):
+            temp = nums[i]
+            j = i
+            # Sort the sub list for this gap
+
+            while j >= gap and nums[j - gap] > temp:
+                nums[j] = nums[j - gap]
+                j = j - gap
+                if not novis:
+                    animate(nums)
+            nums[j] = temp
+
+        # Reduce the gap for the next element
+
+        gap = gap // 2
+
+        if not novis:
+            animate(nums)
+
+
+def timeAlgorithm(algorithm, nums):
+
+    setup_code = f"from __main__ import {algorithm}"
+
+    if algorithm == "quickSort" or algorithm == "mergeSort":
+        stmt = f"{algorithm}({nums}, 0, (len({nums}) - 1))"
+    else:
+        stmt = f"{algorithm}({nums})"
+
+    times = repeat(setup=setup_code, stmt=stmt, repeat=3, number=10)
+    
+    
+    with open(r"C:\Users\Herman\Development\bestTimes.txt") as json_file:
+        bestTimes = json.load(json_file)
+        for d in data
+    
+    
+    print(f"{algorithm} took {min(times)} to run")
+
+
 def write_to_file(nums, sort):
     file1 = open(r"C:\Users\Herman\Development\write_file1.txt", "w")
 
@@ -323,10 +373,46 @@ def main():
     write_to_file(nums, "Unsorted:\n")
 
     if algorithm == "Bubble":
-        bubblesort(nums)
+        if novis:
+            timeAlgorithm(algorithm="bubbleSort", nums=nums)
+        else:
+            bubbleSort(nums)
 
     if algorithm == "Selection":
-        selectionsort(nums)
+        if novis:
+            timeAlgorithm(algorithm="selectionSort", nums=nums)
+        else:
+            selectionSort(nums)
+
+    if algorithm == "Quick":
+        n = len(nums)
+        if novis:
+            timeAlgorithm(algorithm="quickSort", nums=nums)
+        else:
+            quickSort(nums, 0, n - 1)
+
+    if algorithm == "Merge":
+        n = len(nums)
+        if novis:
+            timeAlgorithm(algorithm="mergeSort", nums=nums)
+        else:
+            mergeSort(nums, 0, n - 1)
+
+    if algorithm == "Insertion":
+        if novis:
+            timeAlgorithm(algorithm="insertionSort", nums=nums)
+        else:
+            insertionSort(nums)
+
+    if algorithm == "Shell":
+        if novis:
+            timeAlgorithm(algorithm="shellSort", nums=nums)
+        else:
+            shellSort(nums)
+
+    if algorithm == "Sort":
+        nums.sort()
+        print(nums)
 
     # Skriver den sorterte listen til output filen
     write_to_file(nums, "\n Sorted:\n")
