@@ -97,6 +97,148 @@ def selectionsort(nums):
     return nums
 
 
+def partition(nums, low, high):
+    global novis
+    i = low - 1  # index of smaller element
+    pivot = nums[high]  # pivot
+
+    for j in range(low, high):
+
+        # If current element is smaller than or
+        # equal to pivot
+        if nums[j] <= pivot:
+
+            # increment index of smaller element
+            i = i + 1
+            nums[i], nums[j] = nums[j], nums[i]
+            if not novis:
+                animate(nums)
+
+    nums[i + 1], nums[high] = nums[high], nums[i + 1]
+    if not novis:
+        animate(nums)
+    return i + 1
+
+
+# Function to do Quick sort
+def quickSort(nums, low, high):
+    global novis
+    if not novis:
+        animate(nums)
+
+    if low < high:
+
+        # pi is partitioning index, nums[p] is now
+        # at right place
+        pi = partition(nums, low, high)
+
+        # Separately sort elements before
+        # partition and after partition
+        quickSort(nums, low, pi - 1)
+        quickSort(nums, pi + 1, high)
+
+
+def merge(nums, l, m, r):
+    global novis
+
+    if not novis:
+        animate(nums)
+
+    n1 = m - l + 1
+    n2 = r - m
+
+    # create temp numsays
+    L = [0] * (n1)
+    R = [0] * (n2)
+
+    # Copy data to temp numsays L[] and R[]
+    for i in range(0, n1):
+        L[i] = nums[l + i]
+        if not novis:
+            animate(nums)
+
+    for j in range(0, n2):
+        R[j] = nums[m + 1 + j]
+        if not novis:
+            animate(nums)
+
+    # Merge the temp numsays back into nums[l..r]
+    i = 0  # Initial index of first subnumsay
+    j = 0  # Initial index of second subnumsay
+    k = l  # Initial index of merged subnumsay
+
+    while i < n1 and j < n2:
+        if L[i] <= R[j]:
+            nums[k] = L[i]
+            i += 1
+
+        else:
+            nums[k] = R[j]
+            j += 1
+
+        if not novis:
+            animate(nums)
+        k += 1
+
+    # Copy the remaining elements of L[], if there
+    # are any
+    while i < n1:
+        nums[k] = L[i]
+        if not novis:
+            animate(nums)
+        i += 1
+        k += 1
+
+    # Copy the remaining elements of R[], if there
+    # are any
+    while j < n2:
+        nums[k] = R[j]
+        if not novis:
+            animate(nums)
+        j += 1
+        k += 1
+
+
+# l is for left index and r is right index of the
+# sub-numsay of nums to be sorted
+def mergeSort(nums, l, r):
+    global novis
+
+    if not novis:
+        animate(nums)
+
+    if l < r:
+
+        # Same as (l+r)//2, but avoids overflow for
+        # large l and h
+        m = (l + (r - 1)) // 2
+
+        # Sort first and second halves
+        mergeSort(nums, l, m)
+        mergeSort(nums, m + 1, r)
+        merge(nums, l, m, r)
+
+
+def insertionSort(nums):
+    global novis
+
+    for i in range(1, len(nums)):
+        j = i - 1
+        nxt_element = nums[i]
+        if not novis:
+            animate(nums)
+        # Compare the current element with next one
+
+        while (nums[j] > nxt_element) and (j >= 0):
+            nums[j + 1] = nums[j]
+            j = j - 1
+            if not novis:
+                animate(nums)
+        nums[j + 1] = nxt_element
+        if not novis:
+            animate(nums)
+
+
 def write_to_file(nums, sort):
     file1 = open(r"C:\Users\Herman\Development\write_file1.txt", "w")
 
