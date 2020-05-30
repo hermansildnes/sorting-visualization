@@ -64,7 +64,7 @@ def bubblesort(nums):
                 swap(nums, j, j + 1)
 
                 if not novis:
-                    time.sleep(0.01)
+                    time.sleep(0.05)
                     animate(nums)
 
     return nums
@@ -83,7 +83,7 @@ def selectionsort(nums):
 
         if not novis:
             animate(nums)
-            time.sleep(0.01)
+            time.sleep(0.05)
 
     return nums
 
@@ -113,7 +113,6 @@ def animate(nums):
     # debugging = open(r"C:\Users\Herman\Development\debugging.txt", "a")
 
     pos = 2
-    screen.fill(white)
     for num in nums:
 
         # For debugging purposes only
@@ -124,6 +123,21 @@ def animate(nums):
         # debugging.write("width: " + str(postWidth) + "\n")
         # debugging.write("heigth: " + str(num * 10) + "\n")
         # debugging.write("nums: " + str(nums) + "\n\n")
+
+        pygame.draw.rect(
+            screen,
+            white,
+            (
+                # X
+                (pos),
+                # Y
+                0,
+                # Bredde
+                postWidth,
+                # Høyde
+                screenHeight,
+            ),
+        )
 
         pygame.draw.rect(
             screen,
