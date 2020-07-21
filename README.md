@@ -17,7 +17,7 @@ If you have not yet installed python 3, and you don't know how to do it - follow
 ## Install and run
 To download the visualization tool, clone this repository using git.
 ```
-git clone https://github.com/hermansildnes/Sorting-alg-Visualization
+git clone https://github.com/hermansildnes/sorting-visualization
 ```
 After cloning the repository, execute the following commands to run the visualization tool;
 ```
