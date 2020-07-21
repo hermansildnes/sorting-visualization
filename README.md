@@ -21,7 +21,7 @@ git clone https://github.com/hermansildnes/sorting-visualization
 ```
 After cloning the repository, execute the following commands to run the visualization tool;
 ```
-cd Sorting-alg-Visualization
+cd sorting-visualization
 ```
 ```
 python Visualization.py [Sorting alg]
