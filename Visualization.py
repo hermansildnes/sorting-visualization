@@ -9,10 +9,13 @@ from timeit import repeat
 import json
 
 
-parser = argparse.ArgumentParser(description="Visualize different sorting-algoritms")
+parser = argparse.ArgumentParser(
+    description="Visualize different sorting-algoritms"
+)
 
 parser.add_argument(
-    "Algorithm", help="What algorithm you want the program to use (Bubble, Selection)"
+    "Algorithm",
+    help="What algorithm you want the program to use (Bubble, Selection)",
 )
 
 parser.add_argument(
@@ -279,13 +282,7 @@ def timeAlgorithm(algorithm, nums):
         stmt = f"{algorithm}({nums})"
 
     times = repeat(setup=setup_code, stmt=stmt, repeat=3, number=10)
-    
-    
-    with open(r"C:\Users\Herman\Development\bestTimes.txt") as json_file:
-        bestTimes = json.load(json_file)
-        for d in data
-    
-    
+
     print(f"{algorithm} took {min(times)} to run")
 
 
